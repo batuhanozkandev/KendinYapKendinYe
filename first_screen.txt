@@ -1,0 +1,74 @@
+import 'package:flutter/material.dart';
+import 'package:kendin_yap_kendin_ye/home_screen.dart';
+
+class FirstScreen extends StatefulWidget {
+  @override
+  _FirstScreenState createState() => _FirstScreenState();
+}
+
+class _FirstScreenState extends State<FirstScreen> {
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      
+      body: Stack(
+        children: [
+          //Giriş ekranıma komple kaplayacak şekilde resim ekledim.
+          Opacity(
+            opacity: 0.7,
+            child: SizedBox(
+                height: size.height,
+                child: Image.asset(
+                  "assets/images/firstscreenimage.jpg",
+                  //firstscreenimage
+                  fit: BoxFit.fitHeight,
+                )),
+          ),
+          //Giriş yazımızı oluşturduk.
+          Positioned(
+            top: size.height * 0.32,
+            left: size.width * 0.15,
+            child: SizedBox(
+                width: size.width * 0.8,
+                child: Text(
+                  "Hoş geldin, haydi yeni lezzetleri keşfetmeye başlayalım!",
+                  style: TextStyle(fontSize: 26, color: Colors.white,backgroundColor: Colors.black45),
+                )),
+          ),
+          //Başlayalım butonu yaptım.
+          Positioned(
+            top: size.height * 0.60,
+            left: size.width * 0.30,
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                },
+                child: Container(
+                  width: size.width * 0.40,
+                  height: size.height * 0.08,
+                  decoration: BoxDecoration(
+                      color: Colors.white38,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Icon(Icons.fastfood_outlined,size: 30,),
+                            Text(
+                              "Başlayalım!",
+                              style: TextStyle(fontSize: 24),
+                            )
+                          ])
+                    ],
+                  ),
+                )),
+          )
+        ],
+      ),
+    );
+  }
+}
