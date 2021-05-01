@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+
+class BaslangicYemegi {
+  String yemek_resim_url;
+  String kart_baslik;
+  String kart_aciklamasi;
+  String yemek_yapilisi;
+  String kac_kisilik;
+  String malzeme1;
+  String malzeme2;
+  String malzeme3;
+  String malzeme4;
+  String malzeme5;
+  String malzeme6;
+  String malzeme7;
+  String malzeme8;
+  String malzeme9;
+  String malzeme10;
+  BaslangicYemegi(
+      {this.kart_aciklamasi,
+      this.kart_baslik,
+      this.yemek_resim_url,
+      this.yemek_yapilisi,
+      this.kac_kisilik,
+      this.malzeme1,
+      this.malzeme2,
+      this.malzeme3,
+      this.malzeme4,
+      this.malzeme5,
+      this.malzeme6,
+      this.malzeme7,this.malzeme8,
+      this.malzeme9,
+      this.malzeme10});
+}
