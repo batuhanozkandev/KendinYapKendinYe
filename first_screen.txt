@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kendin_yap_kendin_ye/home_screen.dart';
-
+String kullaniciID;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+TextEditingController listeIsmi=TextEditingController();
 class FirstScreen extends StatefulWidget {
   @override
   _FirstScreenState createState() => _FirstScreenState();
@@ -36,14 +39,22 @@ class _FirstScreenState extends State<FirstScreen> {
                   style: TextStyle(fontSize: 26, color: Colors.white,backgroundColor: Colors.black45),
                 )),
           ),
+          Positioned(
+            top: size.height * 0.45,
+            left: size.width * 0.15,
+            child: SizedBox(
+                width: size.width * 0.8,
+                child: TextFormField(decoration: InputDecoration(hintText: "Listenizin İsmini Giriniz"),controller:listeIsmi ,)),
+          ),
           //Başlayalım butonu yaptım.
           Positioned(
             top: size.height * 0.60,
             left: size.width * 0.30,
             child: GestureDetector(
                 onTap: () {
+                  kullaniciID=firestore.collection("KullanicininListesi").doc(listeIsmi.text).id;
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                      MaterialPageRoute(builder: (context) => HomeScreen(kullaniciIDdb: kullaniciID,)));
                 },
                 child: Container(
                   width: size.width * 0.40,
