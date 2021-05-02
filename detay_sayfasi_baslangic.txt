@@ -20,7 +20,8 @@ List malzemeler_10;
 class DetaySayfasiBaslangic extends StatefulWidget {
   int index;
   String yemekIsmi;
-  DetaySayfasiBaslangic({this.index, this.yemekIsmi});
+  String kullaniciID;
+  DetaySayfasiBaslangic({this.index, this.yemekIsmi,this.kullaniciID});
   @override
   _DetaySayfasiBaslangicState createState() => _DetaySayfasiBaslangicState();
 }
@@ -61,6 +62,7 @@ class _DetaySayfasiBaslangicState extends State<DetaySayfasiBaslangic> {
       }
       setState(() {});
     });
+    
   }
 
   @override
