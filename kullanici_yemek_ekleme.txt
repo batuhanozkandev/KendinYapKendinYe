@@ -1,0 +1,203 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:kendin_yap_kendin_ye/home_screen.dart';
+
+//String ekleme_yapilacak_kategori;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+TextEditingController yemekIsmi = TextEditingController();
+TextEditingController yemekYapilisi = TextEditingController();
+TextEditingController malzeme1 = TextEditingController();
+TextEditingController malzeme2 = TextEditingController();
+TextEditingController malzeme3 = TextEditingController();
+TextEditingController malzeme4 = TextEditingController();
+TextEditingController malzeme5 = TextEditingController();
+TextEditingController malzeme6 = TextEditingController();
+TextEditingController malzeme7 = TextEditingController();
+TextEditingController malzeme8 = TextEditingController();
+String kullaniciID;
+class YemekEklemeSayfasi extends StatefulWidget {
+  String kullaniciDocID;
+  YemekEklemeSayfasi({this.kullaniciDocID});
+  @override
+  _YemekEklemeSayfasiState createState() => _YemekEklemeSayfasiState();
+}
+
+class _YemekEklemeSayfasiState extends State<YemekEklemeSayfasi> {
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Stack(
+        children: [
+          //Arkaplan resmi ekledim.
+          Opacity(
+              opacity: 0.7,
+              child: SizedBox(
+                  height: size.height,
+                  child: Image.asset("assets/images/first_screen_image.jpg",
+                      fit: BoxFit.fill))),
+          Positioned(
+            top: size.height * 0.08,
+            left: size.width * 0.1,
+            child: SizedBox(
+              width: size.width * 0.8,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Yemeğin İsmi"),
+                controller: yemekIsmi,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.3,
+            left: size.width * 0.1,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -1"),
+                controller: malzeme1,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.3,
+            left: size.width * 0.55,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -2"),
+                controller: malzeme2,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.4,
+            left: size.width * 0.1,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -3"),
+                controller: malzeme3,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.4,
+            left: size.width * 0.55,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -4"),
+                controller: malzeme4,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.5,
+            left: size.width * 0.1,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -5"),
+                controller: malzeme5,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.5,
+            left: size.width * 0.55,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -6"),
+                controller: malzeme6,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.6,
+            left: size.width * 0.1,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -7"),
+                controller: malzeme7,
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.6,
+            left: size.width * 0.55,
+            child: SizedBox(
+              width: size.width * 0.4,
+              child: TextFormField(
+                decoration: InputDecoration(hintText: "Malzemeler -8"),
+                controller: malzeme8,
+              ),
+            ),
+          ),
+          
+          Positioned(
+            top: size.height * 0.17,
+            left: size.width * 0.1,
+            child: SizedBox(
+              width: size.width * 0.8,
+              child: TextFormField(
+                maxLines: 3,
+                decoration: InputDecoration(hintText: "Yemeğin Yapılışı"),
+                controller: yemekYapilisi,
+              ),
+            ),
+          ),
+          //Ekle butonum
+          Positioned(
+            top: size.height * 0.9,
+            left: size.width * 0.40,
+            child: RaisedButton(
+              onPressed: () {
+               
+                
+                debugPrint(kullaniciID.toString());
+                firestore
+                    .collection("KullanicininListesi")
+                    .doc(widget.kullaniciDocID.toString())
+                    .collection("Yemekler")
+                    .doc(yemekIsmi.text)
+                    .set({
+                  "YemekIsmi": yemekIsmi.text,
+                  "YemekYapilisi": yemekYapilisi.text,
+                  //"YemekKategorisi": ekleme_yapilacak_kategori.toString(),
+                  "malzeme1": malzeme1.text,
+                  "malzeme2": malzeme2.text,
+                  "malzeme3": malzeme3.text,
+                  "malzeme4": malzeme4.text,
+                  "malzeme5": malzeme5.text,
+                  "malzeme6": malzeme6.text,
+                  "malzeme7": malzeme7.text,
+                  "malzeme8": malzeme8.text,
+                  
+                });
+                Navigator.push(context, MaterialPageRoute(builder: (contex)=>HomeScreen(kullaniciIDdb: kullaniciID,)));
+                yemekIsmi.clear();
+                yemekYapilisi.clear();
+                malzeme1.clear();
+                malzeme2.clear();
+                malzeme3.clear();
+                malzeme4.clear();
+                malzeme5.clear();
+                malzeme6.clear();
+                malzeme7.clear();
+                malzeme8.clear();
+
+              },
+              color: Colors.black,
+              child: Text(
+                "Ekle!",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
