@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kendin_yap_kendin_ye/MealCard.dart';
+import 'package:kendin_yap_kendin_ye/ana_yemek_model.dart';
+import 'package:kendin_yap_kendin_ye/ara_sicak_yemek_model.dart';
+import 'package:kendin_yap_kendin_ye/baslangic_yemek_model.dart';
+import 'package:kendin_yap_kendin_ye/detay_sayfas%C4%B1_anayemek.dart';
+import 'package:kendin_yap_kendin_ye/detay_sayfasi_arasicak.dart';
+import 'package:kendin_yap_kendin_ye/detay_sayfasi_baslangic.dart';
+import 'package:kendin_yap_kendin_ye/detay_sayfasi_benimlistem.dart';
+import 'package:kendin_yap_kendin_ye/detay_sayfasi_icecek.dart';
+import 'package:kendin_yap_kendin_ye/detay_sayfasi_salata.dart';
+import 'package:kendin_yap_kendin_ye/detay_sayfasi_tatli.dart';
+import 'package:kendin_yap_kendin_ye/icecek_model.dart';
+import 'package:kendin_yap_kendin_ye/kullanici_yemek_ekleme.dart';
+import 'package:kendin_yap_kendin_ye/salata_model.dart';
+import 'package:kendin_yap_kendin_ye/tatli_model.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
-//MealCard mealCard = MealCard(sugarCount: 5);
+
 List<String> kategoriler = [
   "Başlangıç",
   "Ara Sıcak",
@@ -13,14 +26,262 @@ List<String> kategoriler = [
   "Tatlı",
   "Benim Listem",
 ];
-List<String> mealNames = [
-  "Hamburger",
-];
+List baslangicYemek_kart_baslik;
+List baslangicYemek_kart_aciklama;
+List baslangicYemek_kart_resimUrl;
+List araSicak_kart_baslik;
+List araSicak_kart_aciklama;
+List araSicak_kart_resimUrl;
+List salata_kart_baslik;
+List salata_kart_aciklama;
+List salata_kart_resimUrl;
+List anayemek_kart_baslik;
+List anayemek_kart_aciklama;
+List anayemek_kart_resimUrl;
+List benimlistem_kart_baslik;
+List benimlistem_kart_aciklama;
+List benimlistem_kart_resimUrl;
+List icecek_kart_baslik;
+List icecek_kart_aciklama;
+List icecek_kart_resimUrl;
+List tatli_kart_baslik;
+List tatli_kart_aciklama;
+List tatli_kart_resimUrl;
 int selectedIndex = 0;
 bool selectedFav = false;
 int selectedFavIndex = 0;
 
+BaslangicYemegi ayvaHosafi = BaslangicYemegi(
+  kart_baslik: "Ayva Hoşafı",
+  kart_aciklamasi: "Mükemmel Lezzet!",
+  yemek_resim_url:
+      "https://www.deliciousmagazine.co.uk/wp-content/uploads/2018/08/302843-1-eng-GB_spiced-quince-compote.jpg",
+  yemek_yapilisi:
+      "Ayvaların kabuklarını soyup,ikiye bölün ve çekirdeklerini çıkarın.\nÇekirdeklerin bir kısmını kullanmak üzere kenara ayırın.Kabuklarını soyup, çekirdeklerini çıkardığınız ayvaları küp küp doğrayın.\nTencrenize şekeri, çubuk tarçını, karanfili, ayva çekirdeklerini ve ayvaları ekleyin.\nÜzerine limon suyu ve içme suyunu da ilave edin.\nOrta ateşte kaynamaya bırakın.\nKaynamaya başlayan hoşafımızı kısık ateşte ayvalar iyice yumuşayıp, hoşafın rengi resimdeki gibi olana kadar pişirmeye devam edin.\nAyvalar yumuşayıp, hoşafımız rengini alınca ocaktan alıp,soğumaya bırakın.",
+  kac_kisilik: "4-5",
+  malzeme1: "4 orta boy ayva",
+  malzeme2: "2 litre (10 bardak su)",
+  malzeme3: "1.5 su bardağı toz şeker",
+  malzeme4: "yarım limon suyu",
+  malzeme5: "4-5 tane karanfil",
+  malzeme6: "1 çubuk tarçın",
+  malzeme7: "",
+  malzeme8: "",
+  malzeme9: "",
+  malzeme10: "",
+);
+BaslangicYemegi dusesPatates = BaslangicYemegi(
+  kart_baslik: "Düşes Patates",
+  kart_aciklamasi: "Mükemmel Lezzet!",
+  yemek_resim_url:
+      "https://www.deliciousmagazine.co.uk/wp-content/uploads/2018/08/302843-1-eng-GB_spiced-quince-compote.jpg",
+  yemek_yapilisi:
+      "Patatesleri  soyup, kolay haşlanması için dörde bölün ve bir tencereye alın.\nPatatesleri haşlanması için ocağa yerleştirin.\nHaşlanan patateslerin suyunu süzüp sıcakken tuz, muskat ve  tereyağını da ilave  ederek iyice ezin.\nIlınınca yumurta sarılarını da ekleyip karışıtın ve dinlenmeye bırakın.\nSoğuyan karışımı sıkma torbasına alın.\nYağlı kağıt serilmiş tepsiye ceviz büyüklüğünde toplar halinde sıkın.\nÖnceden ısıtılmış fırında 200-210 derecede kızarana kadar 15 dakika pişirip,Sıcak servis yapabilirsiniz..",
+  kac_kisilik: "4-6",
+  malzeme1: "3 adet orta boy patates",
+  malzeme2: "2 adet yumurta sarısı",
+  malzeme3: "1 yemek kaşığı tereyağı",
+  malzeme4: "muskat rendesi",
+  malzeme5: "tuz",
+  malzeme6: "",
+  malzeme7: "",
+  malzeme8: "",
+  malzeme9: "",
+  malzeme10: "",
+);
+AraSicak suppli = AraSicak(
+  kart_baslik: "Suppli",
+  kart_aciklamasi: "Hafif bir arasicak isteyenlere!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Artan pirinç pilavını kullanabilir veya yeniden pilav yapabilirsiniz.\nPirinç pilavı, parmesan, yumurta, biber ve kekiği bir kaba alıp karıştırın.\nKarışımdan ceviz büyüklüğünde bir parça alın.İçine biraz mozzarella peyniri koyarak top şekli verin.Pirinç toplarını galeta ununa batırın.\nBu işlemi karışımınız bitene kadar yapın.Geniş bir tavada yağı kızdırın.\nKızgın yağda pirinç toplarınızı kızartın.",
+  kac_kisilik: "6-8",
+  malzeme1: "1 bardak pirinç pilavı",
+  malzeme2: "yarım çay bardağı parmesan",
+  malzeme3: "1 adet yumurta",
+  malzeme4: "kırmızı biber",
+  malzeme5: "kekik",
+  malzeme6: "100 gr mozzerella peyniri",
+  malzeme7: "yarım bardak galeta unu",
+  malzeme8: "sıvıyağı",
+  malzeme9: "",
+  malzeme10: "",
+);
+AraSicak pacangaBoregi = AraSicak(
+  kart_baslik: "Paçanga Böreği",
+  kart_aciklamasi: "Bu lezzete kimse doyamayacak!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Yufkaları üst üste serdikten sonra dört eşit parçaya bölün ve  sekiz eşit, üçgen yufka parçası elde edin.Çemensiz ya da tercihe göre yemeklik pastırmayı küçük parçalar halinde kesin. Kaşar peynirini rendeleyin.Kabuğunu soyduğunuz domatesleri küçük küpler halinde doğrayın. Yeşil biberleri halka şeklinde doğrayın.Bir kasede pastırma, kaşar peyniri, domates ve biberi karıştırın.Üçgen yufka parçalarını mutfak tezgahının üzerine açın.Kasede karıştırdığınız malzemeleri 1-2 kaşık olacak şekilde üçgen yufka parçasının geniş kısmına doğru yerleştirin ve önce kenarlardan katladıktan sonra rulo şeklinde sarın. Yufkanın ucunu su ile ıslatıp kapatın.Ayçiçek yağını derin bir tencerede kızdırın. Sardığınız börekleri kızgın yağda kızartın.Fazla yağını bırakmaları için kağıt havlu serili bir servis tabağında 2- 3 dakika kadar beklettikten sonra sıcak olarak servis edin.",
+  kac_kisilik: "8",
+  malzeme1: "3 adet yufka",
+  malzeme2: "100 gr kaşar peyniri(rendelenmiş)",
+  malzeme3: "80 gr çemensiz pastırma",
+  malzeme4: "1 adet domates",
+  malzeme5: "2 adet yeşil biber",
+  malzeme6: "2 su bardağı ayçiçek yağı",
+  malzeme7: "",
+  malzeme8: "",
+  malzeme9: "",
+  malzeme10: "",
+);
+Salata tabbule = Salata(
+  kart_baslik: "Tabbule",
+  kart_aciklamasi: "Sağlıklı bir salatadan daha fazlası!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Bulguru bir kaseye alın, üzerine tuz ve sıcak su döküp ağzı kapalı olarak 20 dakika bekletin.\nGeniş bir kasede maydanoz, nane ve bulguru harmanlayın.\nDomatesleri soyup çekirdeklerini çıkartın ve küçük doğrayın.\nKırmızı biber ve salatalığı küçük küp şeklinde doğrayın ve maydanoza ekleyin.\nSalatayı, tuz ve karabiber ile tatlandırın.\nLimon suyu ve zeytinyağını karıştırıp salatanın üzerine dökün ve karıştırarak servis yapın",
+  kac_kisilik: "3-4",
+  malzeme1: "2 su bardağı kıyılmış maydanoz",
+  malzeme2: "1 çay bardağı ince buldur",
+  malzeme3: "2 adet domates",
+  malzeme4: "2 adet kırmızı biber",
+  malzeme5: "1 adet salatalık",
+  malzeme6: "1 çay bardağı kıyılmış nane",
+  malzeme7: "1 limonun suyu",
+  malzeme8: "yarım çay bardağı zeytinyağı",
+  malzeme9: "tuz",
+  malzeme10: "karabiber",
+);
+Salata morLahanaSalatasi = Salata(
+  kart_baslik: "Mor Lahana Salatası",
+  kart_aciklamasi: "Bu nefis lezzet kaçmaz!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Kırmızı lahananın dış yapraklarını temizleyip ortadan ikiye kesin ve incecik doğrayın. Üzerine tuz serpip lahanaları elinizle ovarak yumuşatın.Akan suyun altında tuzunu giderinceye kadar yıkayıp elinizle sıkarak süzün. Taze soğanları temizleyip doğrayın.Sızma zeytinyağı, limon suyu, nar ekşisi ve tuzu bir kaba alıp karıştırın. Lahanayı salata tabağına alıp taze soğanı ekleyin.Harmanlayıp üzerine cevizleri serpiştirin. Sosu gezdirip nane yapraklarıyla süsleyip servis yapın.Mor lahana salatasını sade veya hamsi buğulama ile birlikte servis edebilirsiniz.",
+  kac_kisilik: "4",
+  malzeme1: "1 küçük mor lahana",
+  malzeme2: "2 dal taze soğan",
+  malzeme3: "50 gram ceviz içi",
+  malzeme4: "3 çorba kaşığı sızma zeytinyağı",
+  malzeme5: "1 çorba kaşığı limon suyu",
+  malzeme6: "1 tatlı kaşığı nar ekşisi",
+  malzeme7: "1 tutam nane yaprağı",
+  malzeme8: "tuz",
+  malzeme9: "",
+  malzeme10: "",
+);
+AnaYemek pureliRostoKofte = AnaYemek(
+  kart_baslik: "Püreli Rosto Köfte",
+  kart_aciklamasi: "Tadı damağınızda kalacak!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Kıymayı, robotta veya rendede çekilmiş soğan ve sarımsak, maydanoz ve diğer malzemelerin ilavesi ile, güzelce yoğurun.\nBir tepside, elinizi yağlayarak köfte harcına rulo şeklini verin.\n180 derecede, yarım saat pişirin ve dilimleyin.\nYapılan sosu üzerine ilave edip ve biraz kaynatın.\nPüre için; haşlanan patatesleri, eritilen margarin ile kavurup, süt ve tuz ilave edip çırpın.\nPüre hazır olunca servis tabağına alın üzerine köfteyi koyun ve en son üzerine sostan az gezdirin.",
+  kac_kisilik: "6-8",
+  malzeme1: "500 gr kıyma",
+  malzeme2: "2 adet soğan ve 3 diş sarımsak",
+  malzeme3: "1 tutam maydanoz",
+  malzeme4: "1 çay bardağı galeta unu",
+  malzeme5: "1 adet yumurta",
+  malzeme6: "tuz,karabiber,kimyon ve pul biber",
+  malzeme7: "5 adet patates",
+  malzeme8: "1 su bardağı süt",
+  malzeme9: "salça",
+  malzeme10: "100 gr margarin ve sıvı yağı",
+);
+AnaYemek tereyagliKaridesGuvec = AnaYemek(
+  kart_baslik: "Tereyağlı Karides Güveç",
+  kart_aciklamasi: "Karides severlere!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "İlk olarak güvecin içerisine kullanacağınız soğan, biber ve domatesleri küp küp doğrayın.\n2 diş sarımsağı ince ince kıyın.\nOrta ateşte ısıtılan tavanın içerisine tereyağını ekleyin ve eritin. \nEriyen yağın içine sarımsakları ekleyip bir kaç dakika kavurun.\nArdından diğer malzemeleri tavanın içerisine alarak soteleyin ve karidesleri ekleyin.\nDefne yaprağı, domates suyu, limon kabuğu ve taze kekiği de karışımın içerisine ekleyerek karıştırın.\nİsteğe göre limon kabuğu yerine limon suyu da tercih edilebilir.\nTuz, karabiber ve istediğiniz baharatlar ile yemeğinizi lezzetlendirebilirsiniz.\nSon olarak hazırladığınız yemeği büyük boy güveç kabına veya küçük güveçlere paylaştırın.\nÜzerlerine rendelenmiş kaşar peyniri ve bir miktar tereyağını ekleyin.\nGüveç kabını, önceden ısıtılmış 180 derecelik fırında pişirin.\nAroma katmak için üzerine nane yaprakları ekleyebilirsin",
+  kac_kisilik: "4",
+  malzeme1: "400 gr çimçim karides",
+  malzeme2: "2 diş sarımsak",
+  malzeme3: "2 çarliston biber",
+  malzeme4: "8 çeri,2 normal domates",
+  malzeme5: "80 ml domates suyu",
+  malzeme6: "150 gr kaşar peyniri(rendelenmiş)",
+  malzeme7: "20 gr tereyağı",
+  malzeme8: "4 dal defne yaprağı ve taze kekik",
+  malzeme9: "1 limon",
+  malzeme10: "baharat",
+);
+Icecek kirazliBuzluCay = Icecek(
+  kart_baslik: "Kirazlı Buzlu Çay",
+  kart_aciklamasi: "Serinlemek isteyenler için!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Suyu derin bir tencerede kaynatın. Kaynayan suya poşet siyah çayları salın ve demini vermesi için 15 dakika kadar bekletin.\nDemini veren poşet siyah çayları bir kenara alın. Demlenen çaya esmer şekeri katın ve karıştırın.\nÇaya lezzetini verecek ve kıvamını arttıracak olan vişne nektarını ilave edin.\nKiraz taneleri ve kırık buzları katıp, son bir kez karıştırdıktan sonra doğal ve ev yapımı buzlu çayın ferahlığını sevdiklerinizle birlikte paylaşarak hissedin.",
+  kac_kisilik: "5",
+  malzeme1: "1 litre su",
+  malzeme2: "4 demlik poşet siyah çay",
+  malzeme3: "1/2 su bardağı esmer şeker",
+  malzeme4: "1 su bardağı vişne nektarı",
+  malzeme5: "1 su bardağı kiraz tanesi",
+  malzeme6: "2 su bardağı kırık buz",
+  malzeme7: "",
+  malzeme8: "",
+  malzeme9: "",
+  malzeme10: "",
+);
+Icecek kavunSerbeti = Icecek(
+  kart_baslik: "Kavun Şerbeti",
+  kart_aciklamasi: "Buz gibi bir şerbet!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Limon kabuklarını rendenin ince tarafıyla rendeleyin. Kabuklarını rendeledikten sonra ortadan ikiye kestiğiniz limonları limon sıkacağında sıkarak suyunu çıkarın. Limonların kalan kısımlarını büyük parçalara bölün.Bir tencereye toz şekeri alın, üzerine rendelenmiş limon kabuğu, limon parçaları ve limon suyunu koyarak karıştırın. İçerisinde limon çekirdeği kalmamasına dikkat edin. Karışımı ağzı kapalı tencerede, iki saat oda ısısında bekletin.Bekleyen limonlu toz şeker karışımını ocağa alın, beş dakika kadar kısık ateşte kaynatın. Ocağı kapatıp, ılınması için bir kenarda bekletin.Çekirdeklerini çıkardığınız kavunları mutfak robotu ya da blenderda püre haline getirin. Bu püreyi ılık durumda olan limon karışımının üzerine ekleyin. Buzdolabında en az bir saat bekletin.Soğumuş şerbet özünü tülbent veya süzgeçle derin bir tencereye süzün, üzerine soğuk suyu ekleyip, karıştırın.Soğuk şerbet karışımını servis bardaklarına paylaştırın. Arzuya göre buz, nane veya fesleğen yapraklarıyla servis yapın.",
+  kac_kisilik: "8",
+  malzeme1: "2 adet orta boy limon",
+  malzeme2: "1 su bardağı toz şeker",
+  malzeme3: "3 dilim kavun",
+  malzeme4: "2 litre su",
+  malzeme5: "1/4 demet nane ve fesleğen yaprağı",
+  malzeme6: "",
+  malzeme7: "",
+  malzeme8: "",
+  malzeme9: "",
+  malzeme10: "",
+);
+Tatli oreoluMagnolia = Tatli(
+  kart_baslik: "Oreolu Magnolia",
+  kart_aciklamasi: "Tadı Damağınızda Kalacak!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "Öncelikle tencerenin içerisine yumurta sarısı, nişasta, süt, toz şeker ve unu alın.\nTüm malzemeleri topaklanma kalmayacak şekilde karıştırın.\nArdından ocağın altını yakın ve vanilyayı ilave edin.\nTatlıyı göz göz olana kadar karıştırarak pişirin.\nArdından 5 dakika dinlenmesi için kenarda bekletin.\nDinlendirme işleminin ardından tatlının içerisine kremayı ekleyin ve mikserle çırpın.\nOreoları rondodan geçirerek küçük parçalar haline getirin.\nKasenin içerisine ilk olarak hazırladığınız muhallebiyi ekleyin.\nOrta kısmına oreo ve ceviz parçalarını ekleyin.\nTekrardan muhallebi ve oreo ekleyerek bu işleme devam edin.\nSon olarak üzerine kalan muhallebiyi dökün.\nFındık ve antep fıstığı ile süsleyerek soğuması için buzdolabında bekletin.\nArdından magnolianızı servis edebilirsiniz. Afiyet olsun.",
+  kac_kisilik: "8",
+  malzeme1: "1 litre süt",
+  malzeme2: "1.5 paket oreo",
+  malzeme3: "2 yemek kaşığı un",
+  malzeme4: "2 yemek kaşığı mısır nişastası",
+  malzeme5: "1 paket krema",
+  malzeme6: "1 paket vanilya",
+  malzeme7: "1 yumurta sarısı",
+  malzeme8: "1 su bardağından biraz az toz şeker",
+  malzeme9: "",
+  malzeme10: "",
+);
+Tatli hiraTatlisi = Tatli(
+  kart_baslik: "Hira Tatlısı",
+  kart_aciklamasi: "Yumuşacık hamuruyla sizi büyüleyecek!",
+  yemek_resim_url:
+      "https://burst.shopifycdn.com/photos/restaurant-breakfast.jpg?width=373&format=pjpg&exif=0&iptc=0",
+  yemek_yapilisi:
+      "İlk olarak şerbeti hazırlayarak başlayın. \nŞeker ve suyu bir tencereye alın ve ocağın altını yakın.\nŞekerler eriyene kadar sürekli karıştırın.\nŞerbeti kesinlikle kaynatmayın.\n Şekerler eridiğinde kaynamadan hemen önce ocağın altını kapatın ve soğuması için kenarda bekletin.\nHamur için gerekli olan tüm malzemeleri bir kabın içerisine alın ve karıştırın.\nHamur ele yapışacak yumuşak bir kıvam alana kadar yoğurun.\nGeniş bir kaseye yarım bardak irmik koyun.\nHamurdan ceviz büyüklüğünde parçaları kopartın ve elinizde yuvarlayın.\nHazırladığınız hamurları irmiğe bulayarak yağlı kağıt serili fırın tepsisine dizin.\nÖnceden ısıtılmış 180 dereceli fırında hamurları ortalama 25 dakika pişirin.\nTatlıyı fırından çıkartır çıkartmaz, soğuyan şerbeti üzerinde gezdirin ve şerbeti çekmesi için kenarda bekletin.\nTatlı tamamen şerbeti çektiğinde üzerini hindistan cevizi veya antep fıstığı ile süsleyerek servis edebilirsiniz",
+  kac_kisilik: "6",
+  malzeme1: "1 su bardağı irmik",
+  malzeme2: "1 adet yumurta",
+  malzeme3: "1/2 su bardağı sıvı yağı",
+  malzeme4: "1/2 su bardağı yoğurt",
+  malzeme5: "1 su bardağı un",
+  malzeme6: "1/2 paket vanilin",
+  malzeme7: "1 paket kabartma tozu",
+  malzeme8: "İçine bulamak için : 1/2 su bardağı irmik",
+  malzeme9: "Şerbeti için : 2 su bardağı su ve toz şeker",
+  malzeme10: "",
+);
 class HomeScreen extends StatefulWidget {
+  String kullaniciIDdb;
+  HomeScreen({this.kullaniciIDdb});
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -30,6 +291,97 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    baslangicYemek_kart_baslik = <String>[];
+    baslangicYemek_kart_aciklama = <String>[];
+    baslangicYemek_kart_resimUrl = <String>[];
+    firestore.collection("Baslangic").get().then((querySnapshots) => {
+          for (var doc in querySnapshots.docs)
+            {
+              baslangicYemek_kart_baslik.add(doc.data()["kart_baslik"]),
+              baslangicYemek_kart_aciklama.add(doc.data()["kart_aciklama"]),
+              baslangicYemek_kart_resimUrl.add(doc.data()["kart_resim_url"]),
+            },
+          setState(() {})
+        });
+    araSicak_kart_baslik = <String>[];
+    araSicak_kart_aciklama = <String>[];
+    araSicak_kart_resimUrl = <String>[];
+    firestore.collection("AraSicak").get().then((querySnapshots) => {
+          for (var doc in querySnapshots.docs)
+            {
+              araSicak_kart_baslik.add(doc.data()["kart_baslik"]),
+              araSicak_kart_aciklama.add(doc.data()["kart_aciklama"]),
+              araSicak_kart_resimUrl.add(doc.data()["kart_resim_url"]),
+            },
+          setState(() {})
+        });
+    salata_kart_baslik = <String>[];
+    salata_kart_aciklama = <String>[];
+    salata_kart_resimUrl = <String>[];
+    firestore.collection("Salata").get().then((querySnapshots) => {
+          for (var doc in querySnapshots.docs)
+            {
+              salata_kart_baslik.add(doc.data()["kart_baslik"]),
+              salata_kart_aciklama.add(doc.data()["kart_aciklama"]),
+              salata_kart_resimUrl.add(doc.data()["kart_resim_url"]),
+            },
+          setState(() {})
+        });
+    anayemek_kart_baslik = <String>[];
+    anayemek_kart_aciklama = <String>[];
+    anayemek_kart_resimUrl = <String>[];
+    firestore.collection("Anayemek").get().then((querySnapshots) => {
+          for (var doc in querySnapshots.docs)
+            {
+              anayemek_kart_baslik.add(doc.data()["kart_baslik"]),
+              anayemek_kart_aciklama.add(doc.data()["kart_aciklama"]),
+              anayemek_kart_resimUrl.add(doc.data()["kart_resim_url"]),
+            },
+          setState(() {})
+        });
+    icecek_kart_baslik = <String>[];
+    icecek_kart_aciklama = <String>[];
+    icecek_kart_resimUrl = <String>[];
+    firestore.collection("Icecek").get().then((querySnapshots) => {
+          for (var doc in querySnapshots.docs)
+            {
+              icecek_kart_baslik.add(doc.data()["kart_baslik"]),
+              icecek_kart_aciklama.add(doc.data()["kart_aciklama"]),
+              icecek_kart_resimUrl.add(doc.data()["kart_resim_url"]),
+            },
+          setState(() {})
+        });
+    tatli_kart_baslik = <String>[];
+    tatli_kart_aciklama = <String>[];
+    tatli_kart_resimUrl = <String>[];
+    firestore.collection("Tatli").get().then((querySnapshots) => {
+          for (var doc in querySnapshots.docs)
+            {
+              tatli_kart_baslik.add(doc.data()["kart_baslik"]),
+              tatli_kart_aciklama.add(doc.data()["kart_aciklama"]),
+              tatli_kart_resimUrl.add(doc.data()["kart_resim_url"]),
+            },
+          setState(() {})
+        });
+    //KULLANİCİ LİSTESİ VERİ ÇEKMESİ***************************************
+
+    benimlistem_kart_baslik = <String>[];
+    benimlistem_kart_aciklama = <String>[];
+    benimlistem_kart_resimUrl = <String>[];
+    firestore
+        .collection(
+            "KullanicininListesi/${widget.kullaniciIDdb.toString()}/Yemekler")
+        .get()
+        .then((querySnapshots) => {
+              for (var doc in querySnapshots.docs)
+                {
+                  benimlistem_kart_baslik.add(doc.data()["YemekIsmi"]),
+                  benimlistem_kart_aciklama.add("Benim Yemeğim"),
+                  benimlistem_kart_resimUrl.add(
+                      "https://burst.shopifycdn.com/photos/wonton-appetizer.jpg?width=373&format=pjpg&exif=0&iptc=0"),
+                },
+              setState(() {})
+            });
   }
 
   @override
@@ -40,6 +392,132 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /*baslangica_yemek_ekle(
+      yemekIsmi: "Düşes Patates",
+      kartBaslik: dusesPatates.kart_baslik,
+      kartResmiUrl: dusesPatates.yemek_resim_url,
+      kartAciklama: dusesPatates.kart_aciklamasi,
+      yapilisi: dusesPatates.yemek_yapilisi,
+      kacKisilik: dusesPatates.kac_kisilik,
+      malzeme1: dusesPatates.malzeme1,
+      malzeme2: dusesPatates.malzeme2,
+      malzeme3: dusesPatates.malzeme3,
+      malzeme4: dusesPatates.malzeme4,
+      malzeme5: dusesPatates.malzeme5,
+      malzeme6: dusesPatates.malzeme6,
+      malzeme7: dusesPatates.malzeme7,
+      malzeme8: dusesPatates.malzeme8,
+      malzeme9: dusesPatates.malzeme9,
+      malzeme10: dusesPatates.malzeme10,
+    );*/
+    /*arasicaga_yemek_ekle(
+      yemekIsmi: "Paçanga Böreği",
+      kartBaslik: pacangaBoregi.kart_baslik,
+      kartResmiUrl: pacangaBoregi.yemek_resim_url,
+      kartAciklama: pacangaBoregi.kart_aciklamasi,
+      yapilisi: pacangaBoregi.yemek_yapilisi,
+      kacKisilik: pacangaBoregi.kac_kisilik,
+      malzeme1: pacangaBoregi.malzeme1,
+      malzeme2: pacangaBoregi.malzeme2,
+      malzeme3: pacangaBoregi.malzeme3,
+      malzeme4: pacangaBoregi.malzeme4,
+      malzeme5: pacangaBoregi.malzeme5,
+      malzeme6: pacangaBoregi.malzeme6,
+      malzeme7: pacangaBoregi.malzeme7,
+      malzeme8: pacangaBoregi.malzeme8,
+      malzeme9: pacangaBoregi.malzeme9,
+      malzeme10: pacangaBoregi.malzeme10,
+    );*/
+    /*salataya_yemek_ekle(
+      yemekIsmi: "Mor Lahana Salatası",
+      kartBaslik: morLahanaSalatasi.kart_baslik,
+      kartResmiUrl: morLahanaSalatasi.yemek_resim_url,
+      kartAciklama: morLahanaSalatasi.kart_aciklamasi,
+      yapilisi: morLahanaSalatasi.yemek_yapilisi,
+      kacKisilik: morLahanaSalatasi.kac_kisilik,
+      malzeme1: morLahanaSalatasi.malzeme1,
+      malzeme2: morLahanaSalatasi.malzeme2,
+      malzeme3: morLahanaSalatasi.malzeme3,
+      malzeme4: morLahanaSalatasi.malzeme4,
+      malzeme5: morLahanaSalatasi.malzeme5,
+      malzeme6: morLahanaSalatasi.malzeme6,
+      malzeme7: morLahanaSalatasi.malzeme7,
+      malzeme8: morLahanaSalatasi.malzeme8,
+      malzeme9: morLahanaSalatasi.malzeme9,
+      malzeme10: morLahanaSalatasi.malzeme10,
+    );*/
+    /*anayemege_yemek_ekle(
+      yemekIsmi: "Tereyağlı Karides Güveç",
+      kartBaslik: tereyagliKaridesGuvec.kart_baslik,
+      kartResmiUrl: tereyagliKaridesGuvec.yemek_resim_url,
+      kartAciklama: tereyagliKaridesGuvec.kart_aciklamasi,
+      yapilisi: tereyagliKaridesGuvec.yemek_yapilisi,
+      kacKisilik: tereyagliKaridesGuvec.kac_kisilik,
+      malzeme1: tereyagliKaridesGuvec.malzeme1,
+      malzeme2: tereyagliKaridesGuvec.malzeme2,
+      malzeme3: tereyagliKaridesGuvec.malzeme3,
+      malzeme4: tereyagliKaridesGuvec.malzeme4,
+      malzeme5: tereyagliKaridesGuvec.malzeme5,
+      malzeme6: tereyagliKaridesGuvec.malzeme6,
+      malzeme7: tereyagliKaridesGuvec.malzeme7,
+      malzeme8: tereyagliKaridesGuvec.malzeme8,
+      malzeme9: tereyagliKaridesGuvec.malzeme9,
+      malzeme10: tereyagliKaridesGuvec.malzeme10,
+    );*/
+    /*icecege_yemek_ekle(
+      yemekIsmi: "Kavun Şerbeti",
+      kartBaslik: kavunSerbeti.kart_baslik,
+      kartResmiUrl: kavunSerbeti.yemek_resim_url,
+      kartAciklama: kavunSerbeti.kart_aciklamasi,
+      yapilisi: kavunSerbeti.yemek_yapilisi,
+      kacKisilik: kavunSerbeti.kac_kisilik,
+      malzeme1: kavunSerbeti.malzeme1,
+      malzeme2: kavunSerbeti.malzeme2,
+      malzeme3: kavunSerbeti.malzeme3,
+      malzeme4: kavunSerbeti.malzeme4,
+      malzeme5: kavunSerbeti.malzeme5,
+      malzeme6: kavunSerbeti.malzeme6,
+      malzeme7: kavunSerbeti.malzeme7,
+      malzeme8: kavunSerbeti.malzeme8,
+      malzeme9: kavunSerbeti.malzeme9,
+      malzeme10: kavunSerbeti.malzeme10,
+    );*/
+    /*tatliya_yemek_ekle(
+      yemekIsmi: "Hira Tatlısı",
+      kartBaslik: hiraTatlisi.kart_baslik,
+      kartResmiUrl: hiraTatlisi.yemek_resim_url,
+      kartAciklama: hiraTatlisi.kart_aciklamasi,
+      yapilisi: hiraTatlisi.yemek_yapilisi,
+      kacKisilik: hiraTatlisi.kac_kisilik,
+      malzeme1: hiraTatlisi.malzeme1,
+      malzeme2: hiraTatlisi.malzeme2,
+      malzeme3: hiraTatlisi.malzeme3,
+      malzeme4: hiraTatlisi.malzeme4,
+      malzeme5: hiraTatlisi.malzeme5,
+      malzeme6: hiraTatlisi.malzeme6,
+      malzeme7: hiraTatlisi.malzeme7,
+      malzeme8: hiraTatlisi.malzeme8,
+      malzeme9: hiraTatlisi.malzeme9,
+      malzeme10: hiraTatlisi.malzeme10,
+    );*/
+    /*tatliya_yemek_ekle(
+      yemekIsmi: "Oreolu Magnolia",
+      kartBaslik: oreoluMagnolia.kart_baslik,
+      kartResmiUrl: oreoluMagnolia.yemek_resim_url,
+      kartAciklama: oreoluMagnolia.kart_aciklamasi,
+      yapilisi: oreoluMagnolia.yemek_yapilisi,
+      kacKisilik: oreoluMagnolia.kac_kisilik,
+      malzeme1: oreoluMagnolia.malzeme1,
+      malzeme2: oreoluMagnolia.malzeme2,
+      malzeme3: oreoluMagnolia.malzeme3,
+      malzeme4: oreoluMagnolia.malzeme4,
+      malzeme5: oreoluMagnolia.malzeme5,
+      malzeme6: oreoluMagnolia.malzeme6,
+      malzeme7: oreoluMagnolia.malzeme7,
+      malzeme8: oreoluMagnolia.malzeme8,
+      malzeme9: oreoluMagnolia.malzeme9,
+      malzeme10: oreoluMagnolia.malzeme10,
+    );*/
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.black,
@@ -96,268 +574,1097 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           //Yemek kartlarımı listeliyorum.
           //BAŞLANGIÇA BASILMIŞSA
-          selectedIndex==0?
-          Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: 2,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, indeks) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.01,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                              child: Column(
-                            children: [
-                              SizedBox(
-                                  height: size.height * 0.4,
-                                  width: size.width,
-                                  child: Image.asset(
-                                    "assets/images/first_screen_image.jpg",
-                                    fit: BoxFit.fitWidth,
-                                  )),
-                            ],
-                          )),
-                        ],
-                      ),
-                      Container(
-                        width: size.width * 0.98,
-                        height: size.height * 0.1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+          selectedIndex == 0
+              ? Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: baslangicYemek_kart_baslik.length,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, indeks) {
+                        return Column(
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "Hampurger Patates",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 24),
-                                ),
-                                Spacer(),
-                                IconButton(
-                                    icon: (selectedFav == true) &&
-                                            (selectedFavIndex == indeks)
-                                        ? Icon(
-                                            Icons.favorite,
-                                            color: Colors.red,
-                                          )
-                                        : Icon(
-                                            Icons.favorite_border,
-                                            color: Colors.white,
-                                          ),
-                                    onPressed: () {
-                                      debugPrint(indeks.toString());
-                                      setState(() {
-                                        selectedFavIndex = indeks;
-                                        if (selectedFav) {
-                                          selectedFav = false;
-                                        } else {
-                                          selectedFav = true;
-                                        }
-                                      });
-                                    })
-                              ],
+                            SizedBox(
+                              height: size.height * 0.01,
                             ),
                             Row(
                               children: [
-                                Text(
-                                  "Tadılması gereken leziz yemek!",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 14),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DetaySayfasiBaslangic(
+                                                  index: indeks,
+                                                  kullaniciID: widget
+                                                      .kullaniciIDdb
+                                                      .toString(),
+                                                  yemekIsmi:
+                                                      baslangicYemek_kart_baslik[
+                                                          indeks],
+                                                )));
+                                  },
+                                  child: Container(
+                                      child: Column(
+                                    children: [
+                                      baslangicYemek_kart_resimUrl == null
+                                          ? CircularProgressIndicator()
+                                          : SizedBox(
+                                              height: size.height * 0.4,
+                                              width: size.width,
+                                              child: Hero(
+                                                tag: "meal$indeks",
+                                                child: Image.network(
+                                                  baslangicYemek_kart_resimUrl[
+                                                      indeks],
+                                                  fit: BoxFit.fitWidth,
+                                                ),
+                                              )),
+                                    ],
+                                  )),
                                 ),
                               ],
+                            ),
+                            Container(
+                              width: size.width * 0.98,
+                              height: size.height * 0.1,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        baslangicYemek_kart_baslik[indeks],
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 24),
+                                      ),
+                                      Spacer(),
+                                      IconButton(
+                                          icon: (selectedFav == true) &&
+                                                  (selectedFavIndex == indeks)
+                                              ? Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                )
+                                              : Icon(
+                                                  Icons.favorite_border,
+                                                  color: Colors.white,
+                                                ),
+                                          onPressed: () {
+                                            debugPrint(indeks.toString());
+                                            setState(() {
+                                              selectedFavIndex = indeks;
+                                              if (selectedFav) {
+                                                selectedFav = false;
+                                              } else {
+                                                selectedFav = true;
+                                              }
+                                            });
+                                          })
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        baslangicYemek_kart_aciklama[indeks],
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Divider(
+                              color: Colors.white,
                             ),
                           ],
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.white,
-                      ),
-                    ],
-                  );
-                }),
-          )
-          //******************************************************************************************** */
-          //ARA SICAĞA BASILMIŞSA
-          //******************************************************************************************** */
-          
-          :selectedIndex==1?Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: 2,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, indeks) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.01,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                              child: Column(
-                            children: [
-                              SizedBox(
-                                  height: size.height * 0.4,
-                                  width: size.width,
-                                  child: Image.asset(
-                                    "assets/images/firstscreenimage.jpg",
-                                    fit: BoxFit.fitWidth,
-                                  )),
-                            ],
-                          )),
-                        ],
-                      ),
-                      Container(
-                        width: size.width * 0.98,
-                        height: size.height * 0.1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
+                        );
+                      }),
+                )
+              //******************************************************************************************** */
+              //ARA SICAĞA BASILMIŞSA
+              //******************************************************************************************** */
+
+              : selectedIndex == 1
+                  ? Expanded(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: araSicak_kart_baslik.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, indeks) {
+                            return Column(
                               children: [
-                                Text(
-                                  "Hampurger Patates",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 24),
+                                SizedBox(
+                                  height: size.height * 0.01,
                                 ),
-                                Spacer(),
-                                IconButton(
-                                    icon: (selectedFav == true) &&
-                                            (selectedFavIndex == indeks)
-                                        ? Icon(
-                                            Icons.favorite,
-                                            color: Colors.red,
-                                          )
-                                        : Icon(
-                                            Icons.favorite_border,
-                                            color: Colors.white,
+                                Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetaySayfasiArasicak(
+                                                      index: indeks,
+                                                      yemekIsmi:
+                                                          araSicak_kart_baslik[
+                                                              indeks],
+                                                    )));
+                                      },
+                                      child: Container(
+                                          child: Column(
+                                        children: [
+                                          araSicak_kart_resimUrl == null
+                                              ? CircularProgressIndicator()
+                                              : SizedBox(
+                                                  height: size.height * 0.4,
+                                                  width: size.width,
+                                                  child: Hero(
+                                                    tag: "meal$indeks",
+                                                    child: Image.network(
+                                                      araSicak_kart_resimUrl[
+                                                          indeks],
+                                                      fit: BoxFit.fitWidth,
+                                                    ),
+                                                  )),
+                                        ],
+                                      )),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  width: size.width * 0.98,
+                                  height: size.height * 0.1,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            araSicak_kart_baslik[indeks],
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 24),
                                           ),
-                                    onPressed: () {
-                                      debugPrint(indeks.toString());
-                                      setState(() {
-                                        selectedFavIndex = indeks;
-                                        if (selectedFav) {
-                                          selectedFav = false;
-                                        } else {
-                                          selectedFav = true;
-                                        }
-                                      });
-                                    })
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Tadılması gereken leziz yemek!",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.white,
-                      ),
-                    ],
-                  );
-                }),
-          )
-          //******************************************************************************************** */
-          //sALATAYA BASILMIŞSA
-          //******************************************************************************************** */
-          :Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: 2,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, indeks) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.01,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                              child: Column(
-                            children: [
-                              SizedBox(
-                                  height: size.height * 0.4,
-                                  width: size.width,
-                                  child: Image.asset(
-                                    "assets/images/firstscreenimage.jpg",
-                                    fit: BoxFit.fitWidth,
-                                  )),
-                            ],
-                          )),
-                        ],
-                      ),
-                      Container(
-                        width: size.width * 0.98,
-                        height: size.height * 0.1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  " Patates",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 24),
-                                ),
-                                Spacer(),
-                                IconButton(
-                                    icon: (selectedFav == true) &&
-                                            (selectedFavIndex == indeks)
-                                        ? Icon(
-                                            Icons.favorite,
-                                            color: Colors.red,
-                                          )
-                                        : Icon(
-                                            Icons.favorite_border,
-                                            color: Colors.white,
+                                          Spacer(),
+                                          IconButton(
+                                              icon: (selectedFav == true) &&
+                                                      (selectedFavIndex ==
+                                                          indeks)
+                                                  ? Icon(
+                                                      Icons.favorite,
+                                                      color: Colors.red,
+                                                    )
+                                                  : Icon(
+                                                      Icons.favorite_border,
+                                                      color: Colors.white,
+                                                    ),
+                                              onPressed: () {
+                                                debugPrint(indeks.toString());
+                                                setState(() {
+                                                  selectedFavIndex = indeks;
+                                                  if (selectedFav) {
+                                                    selectedFav = false;
+                                                  } else {
+                                                    selectedFav = true;
+                                                  }
+                                                });
+                                              })
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            araSicak_kart_aciklama[indeks],
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14),
                                           ),
-                                    onPressed: () {
-                                      debugPrint(indeks.toString());
-                                      setState(() {
-                                        selectedFavIndex = indeks;
-                                        if (selectedFav) {
-                                          selectedFav = false;
-                                        } else {
-                                          selectedFav = true;
-                                        }
-                                      });
-                                    })
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Tadılması gereken leziz yemek!",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 14),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Divider(
+                                  color: Colors.white,
                                 ),
                               ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.white,
-                      ),
-                    ],
-                  );
-                }),
-          )
+                            );
+                          }),
+                    )
+                  //******************************************************************************************** */
+                  //sALATAYA BASILMIŞSA
+                  //******************************************************************************************** */
+                  : selectedIndex == 2
+                      ? Expanded(
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: salata_kart_baslik.length,
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (context, indeks) {
+                                return Column(
+                                  children: [
+                                    SizedBox(
+                                      height: size.height * 0.01,
+                                    ),
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetaySayfasiSalata(
+                                                          index: indeks,
+                                                          yemekIsmi:
+                                                              salata_kart_baslik[
+                                                                  indeks],
+                                                        )));
+                                          },
+                                          child: Container(
+                                              child: Column(
+                                            children: [
+                                              araSicak_kart_resimUrl == null
+                                                  ? CircularProgressIndicator()
+                                                  : SizedBox(
+                                                      height: size.height * 0.4,
+                                                      width: size.width,
+                                                      child: Hero(
+                                                        tag: "meal$indeks",
+                                                        child: Image.network(
+                                                          salata_kart_resimUrl[
+                                                              indeks],
+                                                          fit: BoxFit.fitWidth,
+                                                        ),
+                                                      )),
+                                            ],
+                                          )),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      width: size.width * 0.98,
+                                      height: size.height * 0.1,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                salata_kart_baslik[indeks],
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 24),
+                                              ),
+                                              Spacer(),
+                                              IconButton(
+                                                  icon: (selectedFav == true) &&
+                                                          (selectedFavIndex ==
+                                                              indeks)
+                                                      ? Icon(
+                                                          Icons.favorite,
+                                                          color: Colors.red,
+                                                        )
+                                                      : Icon(
+                                                          Icons.favorite_border,
+                                                          color: Colors.white,
+                                                        ),
+                                                  onPressed: () {
+                                                    debugPrint(
+                                                        indeks.toString());
+                                                    setState(() {
+                                                      selectedFavIndex = indeks;
+                                                      if (selectedFav) {
+                                                        selectedFav = false;
+                                                      } else {
+                                                        selectedFav = true;
+                                                      }
+                                                    });
+                                                  })
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                salata_kart_aciklama[indeks],
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                );
+                              }),
+                        ) //******************************************************************************************** */
+                      //ANAYEMEĞE BASILMIŞSA
+                      //******************************************************************************************** */
+                      : selectedIndex == 3
+                          ? Expanded(
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: anayemek_kart_baslik.length,
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, indeks) {
+                                    return Column(
+                                      children: [
+                                        SizedBox(
+                                          height: size.height * 0.01,
+                                        ),
+                                        Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DetaySayfasiAnayemek(
+                                                              index: indeks,
+                                                              yemekIsmi:
+                                                                  anayemek_kart_baslik[
+                                                                      indeks],
+                                                            )));
+                                              },
+                                              child: Container(
+                                                  child: Column(
+                                                children: [
+                                                  anayemek_kart_resimUrl == null
+                                                      ? CircularProgressIndicator()
+                                                      : SizedBox(
+                                                          height:
+                                                              size.height * 0.4,
+                                                          width: size.width,
+                                                          child: Hero(
+                                                            tag: "meal$indeks",
+                                                            child:
+                                                                Image.network(
+                                                              anayemek_kart_resimUrl[
+                                                                  indeks],
+                                                              fit: BoxFit
+                                                                  .fitWidth,
+                                                            ),
+                                                          )),
+                                                ],
+                                              )),
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                          width: size.width * 0.98,
+                                          height: size.height * 0.1,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    anayemek_kart_baslik[
+                                                        indeks],
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 24),
+                                                  ),
+                                                  Spacer(),
+                                                  IconButton(
+                                                      icon: (selectedFav ==
+                                                                  true) &&
+                                                              (selectedFavIndex ==
+                                                                  indeks)
+                                                          ? Icon(
+                                                              Icons.favorite,
+                                                              color: Colors.red,
+                                                            )
+                                                          : Icon(
+                                                              Icons
+                                                                  .favorite_border,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                      onPressed: () {
+                                                        debugPrint(
+                                                            indeks.toString());
+                                                        setState(() {
+                                                          selectedFavIndex =
+                                                              indeks;
+                                                          if (selectedFav) {
+                                                            selectedFav = false;
+                                                          } else {
+                                                            selectedFav = true;
+                                                          }
+                                                        });
+                                                      })
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    anayemek_kart_aciklama[
+                                                        indeks],
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 14),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Divider(
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                            )
+                          //******************************************************************************************** */
+                          //İÇECEĞE BASILMIŞSA
+                          //******************************************************************************************** */
+                          : selectedIndex == 4
+                              ? Expanded(
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: icecek_kart_baslik.length,
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder: (context, indeks) {
+                                        return Column(
+                                          children: [
+                                            SizedBox(
+                                              height: size.height * 0.01,
+                                            ),
+                                            Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                DetaySayfasiIcecek(
+                                                                  index: indeks,
+                                                                  yemekIsmi:
+                                                                      icecek_kart_baslik[
+                                                                          indeks],
+                                                                )));
+                                                  },
+                                                  child: Container(
+                                                      child: Column(
+                                                    children: [
+                                                      icecek_kart_resimUrl ==
+                                                              null
+                                                          ? CircularProgressIndicator()
+                                                          : SizedBox(
+                                                              height:
+                                                                  size.height *
+                                                                      0.4,
+                                                              width: size.width,
+                                                              child: Hero(
+                                                                tag:
+                                                                    "meal$indeks",
+                                                                child: Image
+                                                                    .network(
+                                                                  icecek_kart_resimUrl[
+                                                                      indeks],
+                                                                  fit: BoxFit
+                                                                      .fitWidth,
+                                                                ),
+                                                              )),
+                                                    ],
+                                                  )),
+                                                ),
+                                              ],
+                                            ),
+                                            Container(
+                                              width: size.width * 0.98,
+                                              height: size.height * 0.1,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        icecek_kart_baslik[
+                                                            indeks],
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 24),
+                                                      ),
+                                                      Spacer(),
+                                                      IconButton(
+                                                          icon: (selectedFav ==
+                                                                      true) &&
+                                                                  (selectedFavIndex ==
+                                                                      indeks)
+                                                              ? Icon(
+                                                                  Icons
+                                                                      .favorite,
+                                                                  color: Colors
+                                                                      .red,
+                                                                )
+                                                              : Icon(
+                                                                  Icons
+                                                                      .favorite_border,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                          onPressed: () {
+                                                            debugPrint(indeks
+                                                                .toString());
+                                                            setState(() {
+                                                              selectedFavIndex =
+                                                                  indeks;
+                                                              if (selectedFav) {
+                                                                selectedFav =
+                                                                    false;
+                                                              } else {
+                                                                selectedFav =
+                                                                    true;
+                                                              }
+                                                            });
+                                                          })
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        icecek_kart_aciklama[
+                                                            indeks],
+                                                        style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontSize: 14),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Divider(
+                                              color: Colors.white,
+                                            ),
+                                          ],
+                                        );
+                                      }),
+                                ) //******************************************************************************************** */
+                              //TATLIYA BASILMIŞSA
+                              //******************************************************************************************** */
+                              : selectedIndex == 5
+                                  ? Expanded(
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: tatli_kart_baslik.length,
+                                          scrollDirection: Axis.vertical,
+                                          itemBuilder: (context, indeks) {
+                                            return Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: size.height * 0.01,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        DetaySasyfasiTatli(
+                                                                          index:
+                                                                              indeks,
+                                                                          yemekIsmi:
+                                                                              tatli_kart_baslik[indeks],
+                                                                        )));
+                                                      },
+                                                      child: Container(
+                                                          child: Column(
+                                                        children: [
+                                                          tatli_kart_resimUrl ==
+                                                                  null
+                                                              ? CircularProgressIndicator()
+                                                              : SizedBox(
+                                                                  height:
+                                                                      size.height *
+                                                                          0.4,
+                                                                  width: size
+                                                                      .width,
+                                                                  child: Hero(
+                                                                    tag:
+                                                                        "meal$indeks",
+                                                                    child: Image
+                                                                        .network(
+                                                                      tatli_kart_resimUrl[
+                                                                          indeks],
+                                                                      fit: BoxFit
+                                                                          .fitWidth,
+                                                                    ),
+                                                                  )),
+                                                        ],
+                                                      )),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                  width: size.width * 0.98,
+                                                  height: size.height * 0.1,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            tatli_kart_baslik[
+                                                                indeks],
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 24),
+                                                          ),
+                                                          Spacer(),
+                                                          IconButton(
+                                                              icon: (selectedFav ==
+                                                                          true) &&
+                                                                      (selectedFavIndex ==
+                                                                          indeks)
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .favorite,
+                                                                      color: Colors
+                                                                          .red,
+                                                                    )
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .favorite_border,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                              onPressed: () {
+                                                                debugPrint(indeks
+                                                                    .toString());
+                                                                setState(() {
+                                                                  selectedFavIndex =
+                                                                      indeks;
+                                                                  if (selectedFav) {
+                                                                    selectedFav =
+                                                                        false;
+                                                                  } else {
+                                                                    selectedFav =
+                                                                        true;
+                                                                  }
+                                                                });
+                                                              })
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            tatli_kart_aciklama[
+                                                                indeks],
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 14),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Divider(
+                                                  color: Colors.white,
+                                                ),
+                                              ],
+                                            );
+                                          }),
+                                    ) //******************************************************************************************** */
+                                  //BENİM LİSTEME BASILMIŞSA
+                                  //******************************************************************************************** */
+                                  : Expanded(
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount:
+                                              benimlistem_kart_baslik.length,
+                                          scrollDirection: Axis.vertical,
+                                          itemBuilder: (context, indeks) {
+                                            return Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: size.height * 0.01,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        DetaySayfasiBenimListem(
+                                                                          index:
+                                                                              indeks,
+                                                                          yemekIsmi:
+                                                                              benimlistem_kart_baslik[indeks],
+                                                                          kullaniciID:
+                                                                              widget.kullaniciIDdb,
+                                                                        )));
+                                                      },
+                                                      child: Container(
+                                                          child: Column(
+                                                        children: [
+                                                          benimlistem_kart_resimUrl ==
+                                                                  null
+                                                              ? CircularProgressIndicator()
+                                                              : SizedBox(
+                                                                  height:
+                                                                      size.height *
+                                                                          0.4,
+                                                                  width: size
+                                                                      .width,
+                                                                  child: Hero(
+                                                                    tag:
+                                                                        "meal$indeks",
+                                                                    child: Image
+                                                                        .network(
+                                                                      benimlistem_kart_resimUrl[
+                                                                          indeks],
+                                                                      fit: BoxFit
+                                                                          .fitWidth,
+                                                                    ),
+                                                                  )),
+                                                                  
+                                                        ],
+                                                      )),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                  width: size.width * 0.98,
+                                                  height: size.height * 0.1,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            benimlistem_kart_baslik[
+                                                                indeks],
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 24),
+                                                          ),
+                                                          Spacer(),
+                                                          IconButton(
+                                                              icon: (selectedFav ==
+                                                                          true) &&
+                                                                      (selectedFavIndex ==
+                                                                          indeks)
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .favorite,
+                                                                      color: Colors
+                                                                          .red,
+                                                                    )
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .favorite_border,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                              onPressed: () {
+                                                                debugPrint(indeks
+                                                                    .toString());
+                                                                setState(() {
+                                                                  selectedFavIndex =
+                                                                      indeks;
+                                                                  if (selectedFav) {
+                                                                    selectedFav =
+                                                                        false;
+                                                                  } else {
+                                                                    selectedFav =
+                                                                        true;
+                                                                  }
+                                                                });
+                                                              })
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            benimlistem_kart_aciklama[
+                                                                indeks],
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 14),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Divider(
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  height: size.height * 0.1,
+                                                ),
+                                              ],
+                                            );
+                                          }),
+                                    ),
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => YemekEklemeSayfasi(
+                            kullaniciDocID: widget.kullaniciIDdb,
+                          )));
+            },
+            backgroundColor: Colors.red,
+            child: Icon(Icons.add),
+          ),
         ],
       ),
     );
   }
+}
+
+void baslangica_yemek_ekle({
+  String yemekIsmi,
+  String kartBaslik,
+  String kartAciklama,
+  String kartResmiUrl,
+  String kacKisilik,
+  String yapilisi,
+  String malzeme1,
+  String malzeme2,
+  String malzeme3,
+  String malzeme4,
+  String malzeme5,
+  String malzeme6,
+  String malzeme7,
+  String malzeme8,
+  String malzeme9,
+  String malzeme10,
+}) async {
+  firestore.collection("Baslangic").doc(yemekIsmi).set({
+    "kart_baslik": kartBaslik,
+    "kart_aciklama": kartAciklama,
+    "kart_resim_url": kartResmiUrl,
+    "kac_kisilik": kacKisilik,
+    "yapilisi": yapilisi,
+    "malzeme1": malzeme1,
+    "malzeme2": malzeme2,
+    "malzeme3": malzeme3,
+    "malzeme4": malzeme4,
+    "malzeme5": malzeme5,
+    "malzeme6": malzeme6,
+    "malzeme7": malzeme7,
+    "malzeme8": malzeme8,
+    "malzeme9": malzeme9,
+    "malzeme10": malzeme10,
+  });
+}
+
+void arasicaga_yemek_ekle({
+  String yemekIsmi,
+  String kartBaslik,
+  String kartAciklama,
+  String kartResmiUrl,
+  String kacKisilik,
+  String yapilisi,
+  String malzeme1,
+  String malzeme2,
+  String malzeme3,
+  String malzeme4,
+  String malzeme5,
+  String malzeme6,
+  String malzeme7,
+  String malzeme8,
+  String malzeme9,
+  String malzeme10,
+}) async {
+  firestore.collection("AraSicak").doc(yemekIsmi).set({
+    "kart_baslik": kartBaslik,
+    "kart_aciklama": kartAciklama,
+    "kart_resim_url": kartResmiUrl,
+    "kac_kisilik": kacKisilik,
+    "yapilisi": yapilisi,
+    "malzeme1": malzeme1,
+    "malzeme2": malzeme2,
+    "malzeme3": malzeme3,
+    "malzeme4": malzeme4,
+    "malzeme5": malzeme5,
+    "malzeme6": malzeme6,
+    "malzeme7": malzeme7,
+    "malzeme8": malzeme8,
+    "malzeme9": malzeme9,
+    "malzeme10": malzeme10,
+  });
+}
+
+void salataya_yemek_ekle({
+  String yemekIsmi,
+  String kartBaslik,
+  String kartAciklama,
+  String kartResmiUrl,
+  String kacKisilik,
+  String yapilisi,
+  String malzeme1,
+  String malzeme2,
+  String malzeme3,
+  String malzeme4,
+  String malzeme5,
+  String malzeme6,
+  String malzeme7,
+  String malzeme8,
+  String malzeme9,
+  String malzeme10,
+}) async {
+  firestore.collection("Salata").doc(yemekIsmi).set({
+    "kart_baslik": kartBaslik,
+    "kart_aciklama": kartAciklama,
+    "kart_resim_url": kartResmiUrl,
+    "kac_kisilik": kacKisilik,
+    "yapilisi": yapilisi,
+    "malzeme1": malzeme1,
+    "malzeme2": malzeme2,
+    "malzeme3": malzeme3,
+    "malzeme4": malzeme4,
+    "malzeme5": malzeme5,
+    "malzeme6": malzeme6,
+    "malzeme7": malzeme7,
+    "malzeme8": malzeme8,
+    "malzeme9": malzeme9,
+    "malzeme10": malzeme10,
+  });
+}
+
+void anayemege_yemek_ekle({
+  String yemekIsmi,
+  String kartBaslik,
+  String kartAciklama,
+  String kartResmiUrl,
+  String kacKisilik,
+  String yapilisi,
+  String malzeme1,
+  String malzeme2,
+  String malzeme3,
+  String malzeme4,
+  String malzeme5,
+  String malzeme6,
+  String malzeme7,
+  String malzeme8,
+  String malzeme9,
+  String malzeme10,
+}) async {
+  firestore.collection("Anayemek").doc(yemekIsmi).set({
+    "kart_baslik": kartBaslik,
+    "kart_aciklama": kartAciklama,
+    "kart_resim_url": kartResmiUrl,
+    "kac_kisilik": kacKisilik,
+    "yapilisi": yapilisi,
+    "malzeme1": malzeme1,
+    "malzeme2": malzeme2,
+    "malzeme3": malzeme3,
+    "malzeme4": malzeme4,
+    "malzeme5": malzeme5,
+    "malzeme6": malzeme6,
+    "malzeme7": malzeme7,
+    "malzeme8": malzeme8,
+    "malzeme9": malzeme9,
+    "malzeme10": malzeme10,
+  });
+}
+
+void icecege_yemek_ekle({
+  String yemekIsmi,
+  String kartBaslik,
+  String kartAciklama,
+  String kartResmiUrl,
+  String kacKisilik,
+  String yapilisi,
+  String malzeme1,
+  String malzeme2,
+  String malzeme3,
+  String malzeme4,
+  String malzeme5,
+  String malzeme6,
+  String malzeme7,
+  String malzeme8,
+  String malzeme9,
+  String malzeme10,
+}) async {
+  firestore.collection("Icecek").doc(yemekIsmi).set({
+    "kart_baslik": kartBaslik,
+    "kart_aciklama": kartAciklama,
+    "kart_resim_url": kartResmiUrl,
+    "kac_kisilik": kacKisilik,
+    "yapilisi": yapilisi,
+    "malzeme1": malzeme1,
+    "malzeme2": malzeme2,
+    "malzeme3": malzeme3,
+    "malzeme4": malzeme4,
+    "malzeme5": malzeme5,
+    "malzeme6": malzeme6,
+    "malzeme7": malzeme7,
+    "malzeme8": malzeme8,
+    "malzeme9": malzeme9,
+    "malzeme10": malzeme10,
+  });
+}
+
+void tatliya_yemek_ekle({
+  String yemekIsmi,
+  String kartBaslik,
+  String kartAciklama,
+  String kartResmiUrl,
+  String kacKisilik,
+  String yapilisi,
+  String malzeme1,
+  String malzeme2,
+  String malzeme3,
+  String malzeme4,
+  String malzeme5,
+  String malzeme6,
+  String malzeme7,
+  String malzeme8,
+  String malzeme9,
+  String malzeme10,
+}) async {
+  firestore.collection("Tatli").doc(yemekIsmi).set({
+    "kart_baslik": kartBaslik,
+    "kart_aciklama": kartAciklama,
+    "kart_resim_url": kartResmiUrl,
+    "kac_kisilik": kacKisilik,
+    "yapilisi": yapilisi,
+    "malzeme1": malzeme1,
+    "malzeme2": malzeme2,
+    "malzeme3": malzeme3,
+    "malzeme4": malzeme4,
+    "malzeme5": malzeme5,
+    "malzeme6": malzeme6,
+    "malzeme7": malzeme7,
+    "malzeme8": malzeme8,
+    "malzeme9": malzeme9,
+    "malzeme10": malzeme10,
+  });
 }
