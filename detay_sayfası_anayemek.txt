@@ -1,0 +1,152 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:kendin_yap_kendin_ye/main.dart';
+
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+List detay_resim;
+List yapilis_aciklamasi;
+List kac_kisilik;
+List malzemeler_1;
+List malzemeler_2;
+List malzemeler_3;
+List malzemeler_4;
+List malzemeler_5;
+List malzemeler_6;
+List malzemeler_7;
+List malzemeler_8;
+List malzemeler_9;
+List malzemeler_10;
+
+class DetaySayfasiAnayemek extends StatefulWidget {
+  int index;
+  String yemekIsmi;
+  DetaySayfasiAnayemek({this.index, this.yemekIsmi});
+  @override
+  _DetaySayfasiAnayemekState createState() => _DetaySayfasiAnayemekState();
+}
+
+class _DetaySayfasiAnayemekState extends State<DetaySayfasiAnayemek> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    detay_resim = <String>[];
+    yapilis_aciklamasi = <String>[];
+    kac_kisilik = <String>[];
+    malzemeler_1 = <String>[];
+    malzemeler_2 = <String>[];
+    malzemeler_3 = <String>[];
+    malzemeler_4 = <String>[];
+    malzemeler_5 = <String>[];
+    malzemeler_6 = <String>[];
+    malzemeler_7 = <String>[];
+    malzemeler_8 = <String>[];
+    malzemeler_9 = <String>[];
+    malzemeler_10 = <String>[];
+    firestore.collection("Anayemek").get().then((querySnapshots) {
+      for (var doc in querySnapshots.docs) {
+        yapilis_aciklamasi.add(doc.data()["yapilisi"]);
+        detay_resim.add(doc.data()["kart_resim_url"]);
+        kac_kisilik.add(doc.data()["kac_kisilik"]);
+        malzemeler_1.add(doc.data()["malzeme1"]);
+        malzemeler_2.add(doc.data()["malzeme2"]);
+        malzemeler_3.add(doc.data()["malzeme3"]);
+        malzemeler_4.add(doc.data()["malzeme4"]);
+        malzemeler_5.add(doc.data()["malzeme5"]);
+        malzemeler_6.add(doc.data()["malzeme6"]);
+        malzemeler_7.add(doc.data()["malzeme7"]);
+        malzemeler_8.add(doc.data()["malzeme8"]);
+        malzemeler_9.add(doc.data()["malzeme9"]);
+        malzemeler_10.add(doc.data()["malzeme10"]);
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+      ),
+      backgroundColor: Colors.white60,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                detay_resim == null
+                    ? CircularProgressIndicator()
+                    : Container(
+                        width: size.width * 0.5,
+                        height: size.height * 0.4,
+                        child: Hero(
+                          tag: "meal${widget.index}",
+                          child: Image.network(
+                            detay_resim[widget.index].toString(),
+                          ),
+                        ),
+                      ),
+                Container(
+                  width: size.width * 0.5,
+                  height: size.height * 0.4,
+                  decoration: BoxDecoration(
+                      //color: Colors.white38,
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(20),
+                          topRight: Radius.circular(20))),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      Text("MALZEMELER"),
+                      SizedBox(
+                        height: size.height * 0.03,
+                      ),
+                      Text("(${kac_kisilik[widget.index].toString()} kişilik)"),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      Text(malzemeler_1[widget.index]),
+                      Text(malzemeler_2[widget.index]),
+                      Text(malzemeler_3[widget.index]),
+                      Text(malzemeler_4[widget.index]),
+                      Text(malzemeler_5[widget.index]),
+                      Text(malzemeler_6[widget.index]),
+                      Text(malzemeler_7[widget.index]),
+                      Text(malzemeler_8[widget.index]),
+                      Text(malzemeler_9[widget.index]),
+                      Text(malzemeler_10[widget.index]),
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: size.height * 0.03,
+            ),
+            Text(
+              "Yapılışı : ",
+            ),
+            SizedBox(
+              height: size.height * 0.03,
+            ),
+            SizedBox(
+              width: size.width * 0.9,
+              child: Text(
+                yapilis_aciklamasi[widget.index],
+                style: TextStyle(fontSize: 20, backgroundColor: Colors.black26),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
